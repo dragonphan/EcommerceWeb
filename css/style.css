@@ -1,0 +1,486 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    position: relative;
+    background-color: #F5EFE7;
+    min-width: 1080px;
+}
+
+.homepageheader {
+    position: fixed;
+    height: 82px;
+    width: 100%;
+    min-width: 980px;
+    border-bottom: 1px solid #8E9D8E;
+    margin: 0px;
+    background-color: #9A3B3B;
+}
+
+.loginButton .registerButton {
+    color: #76453B;
+    background: #E2C799;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    line-height: 15px;
+    padding: 12px 24px;
+    border-radius: 16px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+    margin: 20px 0px 0px 10px;
+    font-size: 17px;
+}
+
+
+
+.uiloginbutton:hover {
+    text-decoration: none;
+    background: #C08261;
+}
+
+/* Fixes submit button height problem in Firefox */
+.srcbutton::-moz-focus-inner {
+    border: 0;
+}
+
+.srcclear {
+    clear: both;
+}
+
+.home-welcome {
+    margin-top: 0px;
+}
+
+.home-welcome {
+    margin-top: 0px;
+}
+
+.home-welcome-text h1 {
+    text-align: center;
+    font-size: 55px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.home-welcome-text h2 {
+    text-align: center;
+    font-weight: bold;
+    color: #000000;
+    font-size: 30px;
+}
+
+.profile-container {
+    width: 60%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.small-table {
+    width: 50%;
+    margin: 20px auto;
+}
+
+.button {
+    display: block;
+    margin: 8px auto;
+    border-radius: 25px;
+    width: 30%;
+    padding: 12px 20px;
+    color: #EFE4D9;
+    background: #9A3B3B;
+}
+
+.button:hover {
+    background-color: #c9302c;
+}
+
+.login_register p {
+    font-size: 20px;
+}
+
+.login_register_container {
+    text-align: center;
+    margin: auto;
+    padding-top: 100px;
+}
+
+.type_box {
+    font-size: 20px;
+    font-style: italic;
+    margin-bottom: 3px;
+    margin-top: 0px;
+    padding: 14px;
+    line-height: 25px;
+    border-radius: 4px;
+    border: 1px solid #76453B;
+    margin-left: 0;
+    width: 270px;
+    height: 20px;
+    color: #76453B;
+    background: #F2EAD3;
+}
+
+.profile-nav {
+    height: 35px;
+    font-weight: bold;
+    color: #ffffff;
+    padding: 25px 0px 20px 50px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.profile-nav a {
+    float: left;
+    margin: 5px;
+    text-decoration: none;
+    color: #FFFFFF;
+    padding: 4px 12px;
+    background-color: #9A3B3B;
+    border-radius: 12px;
+    font-size: 23px;
+}
+
+.profile-container {
+    margin: auto;
+    width: 50%;
+    background-color: #EFE4D9;
+}
+
+.profile-container table th {
+    text-align: right;
+}
+
+.profile-container input[type="text"] {
+    text-align: center;
+}
+
+.category {
+    height: 35px;
+    font-weight: bold;
+    color: white;
+    padding: 25px 0px 20px 50px;
+    background-color: #323a39;
+    text-align: center;
+    font-size: 25px;
+}
+
+.quantity-modifiers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modifier-link {
+    text-decoration: none;
+    padding: 0 5px;
+    font-size: 16px;
+    color: black;
+    border: 1px solid #ddd;
+    margin: 0 2px;
+    background: #fff;
+    line-height: 1;
+}
+
+.quantity {
+    padding: 0 5px;
+    font-size: 16px;
+    text-align: center;
+    min-width: 20px;
+}
+
+.modifier-link:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.cart_info_container {
+    text-align: center;
+}
+
+.search_result {
+    margin-top: 30px;
+    margin-left: 120px;
+    font-size: 25px;
+}
+
+/*Search Button*/
+#search {
+    float: left;
+    padding: 15px;
+}
+
+.srctextinput {
+    height: 30px;
+    padding: 9px 15px;
+    font-size: 20px;
+    border: none;
+    color: #76453B;
+    background: #F5EFE7;
+    border-top-left-radius: 5px 5px;
+    border-bottom-left-radius: 5px 5px;
+    width: 335px;
+}
+
+.srcbutton {
+    height: 48px;
+    padding: 9px 5px;
+    font-size: 20px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #76453B;
+    background: #E2C799;
+    border-top-right-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+}
+
+.srcbutton:hover {
+    color: white;
+    text-decoration: none;
+    background: #C08261;
+}
+
+.show-product-container {
+    font-size: 20px;
+    padding: 30px;
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow items to wrap to the next line */
+    justify-content: flex-start;
+}
+
+.product-item {
+    width: 200px;
+    height: 340px;
+    margin: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* Stack children elements vertically */
+    align-items: center;
+}
+
+.product-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.product-details {
+    flex-grow: 1;
+    /* Allow the details section to grow, pushing the price to the bottom */
+    text-align: center;
+}
+
+.view-product-container {
+    display: flex;
+    border: 2px solid #c7587e;
+    padding: 10px;
+}
+
+.product-image-container {
+    display: flex;
+    justify-content: center;
+    flex: 30%;
+    padding: 15px;
+}
+
+.product-details-container {
+    flex: 70%;
+    padding: 15px;
+    max-width: 400px;
+    margin-right: 300px;
+}
+
+.cartButton {
+    background: none;
+    float: right;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.cartButton:hover {
+    background: #C08261;
+    border-radius: 15px;
+}
+
+.cart-container {
+    display: flex;
+    padding: 10px;
+}
+
+.cart-left {
+    display: flex;
+    justify-content: center;
+    flex: 70%;
+    padding: 15px;
+}
+
+.cart-right {
+    flex: 30%;
+    padding: 15px;
+    max-width: 400px;
+
+}
+
+.confirm-order {
+    text-align: center;
+}
+
+.home-prodlist-imgi {
+    height: 270px;
+    width: 300px;
+    padding: 0px;
+    border: 1px solid #847b7b;
+    border-radius: 8px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 5px 10px;
+}
+
+.pagination a:hover {
+    color: #EFE4D9;
+    background: #9A3B3B;
+}
+
+.pagination .active a {
+    background-color: #333;
+    color: white;
+    border: 1px solid #333;
+}
+
+.pagination .disabled {
+    display: none;
+    /* Hides disabled arrows or irrelevant links */
+}
+
+/* Specific styling for the arrows and ellipses */
+.pagination .prev a,
+.pagination .next a {
+    border-radius: 5px;
+    /* Less rounded corners for arrows */
+}
+
+.pagination .dots {
+    border: none;
+    background: none;
+}
+
+.pagination .dots a {
+    background: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: default;
+}
+
+/*sign in */
+.signupform_content h2 {
+    margin: 0px 0 0 0;
+    padding: 0px 0px 20px 0px;
+    font-size: 40px;
+    color: #169E8F;
+    font-weight: bold;
+    text-align: center;
+}
+
+.signupform_text {
+    font-size: 18px;
+    padding: 0;
+    font-weight: bold;
+    color: #9A3B3B;
+    font-style: normal;
+}
+
+.signup_error_msg {
+    font-weight: bold;
+    color: #A92A2A;
+    padding: 0px 10px 15px 10px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/*error echo*/
+.error_echo {
+    color: red;
+    text-align: center;
+    padding: 15px;
+    width: 868px;
+    margin: 0 auto;
+    font-weight: bold;
+    border-radius: 4px;
+    font-size: 17px;
+    background-color: #F3F38B;
+    border-bottom: 2px solid #BBB907;
+    border-top: 1px solid #BBB907;
+    border-left: 1px solid #BBB907;
+    border-right: 1px solid #BBB907;
+}
+
+.succes_echo {
+    color: #088A08;
+    text-align: center;
+    padding: 17px;
+    margin: 0 auto;
+    width: 866px;
+    font-weight: bold;
+    font-size: 17px;
+    background-color: rgba(247, 247, 69, 0.36);
+    border-bottom: 1px solid #BBB907;
+}
+
+.forgetpass {
+    text-decoration: none;
+    color: #186fe0
+}
+
+.forgetpass:hover {
+    color: red;
+}
+
+.home-prodlist h3 {
+    text-align: center;
+    margin: 20px 10px;
+    font-size: 25px;
+}
+
+.home-prodlist-img img div {
+    font-size: 20px;
+}
+
+.home-prodlist-img:hover {
+    background-color: #fff;
+    border-radius: 8px;
+    color: #fff;
+}
