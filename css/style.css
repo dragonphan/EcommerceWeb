@@ -381,3 +381,106 @@ table {
     border: 1px solid #333;
 }
 
+.pagination .disabled {
+    display: none;
+    /* Hides disabled arrows or irrelevant links */
+}
+
+/* Specific styling for the arrows and ellipses */
+.pagination .prev a,
+.pagination .next a {
+    border-radius: 5px;
+    /* Less rounded corners for arrows */
+}
+
+.pagination .dots {
+    border: none;
+    background: none;
+}
+
+.pagination .dots a {
+    background: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: default;
+}
+
+/*sign in */
+.signupform_content h2 {
+    margin: 0px 0 0 0;
+    padding: 0px 0px 20px 0px;
+    font-size: 40px;
+    color: #169E8F;
+    font-weight: bold;
+    text-align: center;
+}
+
+.signupform_text {
+    font-size: 18px;
+    padding: 0;
+    font-weight: bold;
+    color: #9A3B3B;
+    font-style: normal;
+}
+
+.signup_error_msg {
+    font-weight: bold;
+    color: #A92A2A;
+    padding: 0px 10px 15px 10px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/*error echo*/
+.error_echo {
+    color: red;
+    text-align: center;
+    padding: 15px;
+    width: 868px;
+    margin: 0 auto;
+    font-weight: bold;
+    border-radius: 4px;
+    font-size: 17px;
+    background-color: #F3F38B;
+    border-bottom: 2px solid #BBB907;
+    border-top: 1px solid #BBB907;
+    border-left: 1px solid #BBB907;
+    border-right: 1px solid #BBB907;
+}
+
+.succes_echo {
+    color: #088A08;
+    text-align: center;
+    padding: 17px;
+    margin: 0 auto;
+    width: 866px;
+    font-weight: bold;
+    font-size: 17px;
+    background-color: rgba(247, 247, 69, 0.36);
+    border-bottom: 1px solid #BBB907;
+}
+
+.forgetpass {
+    text-decoration: none;
+    color: #186fe0
+}
+
+.forgetpass:hover {
+    color: red;
+}
+
+.home-prodlist h3 {
+    text-align: center;
+    margin: 20px 10px;
+    font-size: 25px;
+}
+
+.home-prodlist-img img div {
+    font-size: 20px;
+}
+
+.home-prodlist-img:hover {
+    background-color: #fff;
+    border-radius: 8px;
+    color: #fff;
+}
