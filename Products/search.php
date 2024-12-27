@@ -12,14 +12,16 @@ if (!isset($_SESSION['user_login'])) {
 }
 
 if (isset($_REQUEST['keywords'])) {
-    $kid = mysqli_real_escape_string($conn, $_REQUEST['keywords']);
-    if ($kid != "" && ctype_alnum($kid)) {
+    $kid = preg_replace('/[^a-zA-Z0-9\s\-_.,&@!?()]/', '', $_REQUEST['keywords']);
+    if (trim($kid) != "") {
         // Handle search logic if needed
     } else {
         header('location: index.php');
+        exit();
     }
 } else {
     header('location: index.php');
+    exit();
 }
 
 $search_value = trim($_GET['keywords']);
@@ -50,6 +52,8 @@ $search_value = trim($_GET['keywords']);
         <div class="product-container">
             <?php
             if (isset($_GET['keywords']) && $_GET['keywords'] != "") {
+                $search_value = trim($_GET['keywords']);
+                $search_value = preg_replace('/[^a-zA-Z0-9\s\-_.,&@!?()]/', '', $search_value);
                 $search_value = mysqli_real_escape_string($conn, $search_value);
                 $sql = "SELECT * FROM products WHERE productname LIKE '%$search_value%' OR item LIKE '%$search_value%' ORDER BY id DESC";
                 $getposts = mysqli_query($conn, $sql) or die(mysqli_error($conn));
