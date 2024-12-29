@@ -2,13 +2,29 @@
     "name": "your-name/ecommerce-web",
     "description": "E-commerce website testing",
     "type": "project",
+    "require": {
+        "php": "^8.1",
+        "composer/installers": "^1.10"
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.6"
     },
     "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
         "classmap": [
-            "src/",
             "tests/"
         ]
-    }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"file_exists('vendor/autoload.php') || copy('vendor/autoload.php', 'autoload.php');\""
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "stable"
 }
