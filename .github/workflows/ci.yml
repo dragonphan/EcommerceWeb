@@ -2,9 +2,11 @@ name: CI/CD Pipeline for PHP Project
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - testing   # Trigger the pipeline for the testing branch
   pull_request:
-    branches: [ main ]
+    branches:
+      - testing   # Trigger the pipeline for pull requests targeting the testing branch
 
 jobs:
   test:
@@ -18,15 +20,15 @@ jobs:
           MYSQL_DATABASE: assgroup_test
         ports:
           - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h mysql --silent"  # Use "mysql" as the host here
-          --health-interval=3s
-          --health-timeout=3s
+        options: >
+          --health-cmd="mysqladmin ping --silent"
+          --health-timeout=60s
           --health-retries=10
           --health-start-period=10s
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -34,24 +36,27 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, mysqli, pdo_mysql
 
-      - name: Verify MySQL Connection
+      - name: Wait for MySQL to be ready
         run: |
-          for i in {1..10}; do
-            if mysql -h"mysql" -P"3306" -uroot -proot -e "SELECT 1" >/dev/null 2>&1; then  # Use "mysql" as the host here
+          for i in {1..30}; do
+            if mysql -h"127.0.0.1" -P"3306" -uroot -proot -e "SELECT 1" >/dev/null 2>&1; then
               echo "MySQL is ready!"
               exit 0
             fi
-            echo "Attempt $i: Waiting for MySQL... (3s)"
-            sleep 3
+            echo "Attempt $i: Waiting for MySQL..."
+            sleep 10
           done
-          echo "MySQL connection failed after 10 attempts"
+          echo "MySQL connection failed after 30 attempts"
           exit 1
 
       - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          php composer.phar install --prefer-dist --no-progress
 
       - name: Setup Database
-        run: mysql -h"mysql" -P"3306" -uroot -proot assgroup_test < tests/setup_test_db.sql  # Use "mysql" as the host here
+        run: |
+          mysql -h"127.0.0.1" -P"3306" -uroot -proot assgroup_test < tests/setup_test_db.sql
 
-      - name: Run Tests
-        run: vendor/bin/phpunit
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit --configuration phpunit.xml
