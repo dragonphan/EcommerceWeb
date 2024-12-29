@@ -8,18 +8,22 @@ class UserRegistrationTest extends TestCase
 
     protected function setUp(): void
     {
-        // Load environment variables
-        $db_host = getenv('DB_HOST') ?: 'localhost';
-        $db_user = getenv('DB_USER') ?: 'root';
-        $db_pass = getenv('DB_PASS') ?: '123';
-        $db_name = getenv('DB_NAME') ?: 'assgroup_test';
+        // Database configuration
+        $db_host = '127.0.0.1';  // Use IP instead of 'localhost'
+        $db_user = 'root';
+        $db_pass = 'root';
+        $db_name = 'assgroup_test';
+        $db_port = 3306;
 
         // Set up database connection for testing
-        $this->conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+        $this->conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
 
         if (!$this->conn) {
-            die("Connection failed: " . mysqli_connect_error());
+            $this->fail("Database connection failed: " . mysqli_connect_error());
         }
+
+        // Clean up any existing test data
+        $this->cleanUpDatabase();
     }
 
     public function testValidUserRegistration()
@@ -38,24 +42,28 @@ class UserRegistrationTest extends TestCase
         $result = $this->registerUser($userData);
 
         // Assert registration was successful
-        $this->assertTrue($result);
+        $this->assertTrue($result, "User registration failed");
 
         // Verify user exists in database
         $email = mysqli_real_escape_string($this->conn, $userData['email']);
         $query = "SELECT * FROM user WHERE email = '$email'";
         $result = mysqli_query($this->conn, $query);
+        
+        $this->assertNotFalse($result, "Database query failed");
+        $this->assertGreaterThan(0, mysqli_num_rows($result), "User not found in database");
+
         $user = mysqli_fetch_assoc($result);
 
         // Assert user data was saved correctly
-        $this->assertGreaterThan(0, mysqli_num_rows($result));  // Verify user exists
-        $this->assertEquals($userData['firstname'], $user['firstname']);
-        $this->assertEquals($userData['lastname'], $user['lastname']);
-        $this->assertEquals($userData['email'], $user['email']);
-        $this->assertEquals($userData['phoneno'], $user['phoneno']);
-        $this->assertEquals($userData['address'], $user['address']);
-
-        // Verify password is stored correctly using password hashing
-        $this->assertTrue(password_verify($userData['password'], $user['password']));
+        $this->assertEquals($userData['firstname'], $user['firstname'], "First name mismatch");
+        $this->assertEquals($userData['lastname'], $user['lastname'], "Last name mismatch");
+        $this->assertEquals($userData['email'], $user['email'], "Email mismatch");
+        $this->assertEquals($userData['phoneno'], $user['phoneno'], "Phone number mismatch");
+        $this->assertEquals($userData['address'], $user['address'], "Address mismatch");
+        
+        // Verify password was hashed
+        $this->assertNotEquals($userData['password'], $user['password'], "Password was not hashed");
+        $this->assertEquals(32, strlen($user['password']), "Password hash length incorrect"); // MD5 hash length
     }
 
     public function testInvalidUserRegistration()
@@ -74,15 +82,15 @@ class UserRegistrationTest extends TestCase
         $result = $this->registerUser($userData);
 
         // Assert registration failed
-        $this->assertFalse($result);
+        $this->assertFalse($result, "Invalid registration was accepted");
 
         // Verify user doesn't exist in database
         $email = mysqli_real_escape_string($this->conn, $userData['email']);
         $query = "SELECT * FROM user WHERE email = '$email'";
         $result = mysqli_query($this->conn, $query);
-
-        // Assert user was not created
-        $this->assertEquals(0, mysqli_num_rows($result));
+        
+        $this->assertNotFalse($result, "Database query failed");
+        $this->assertEquals(0, mysqli_num_rows($result), "Invalid user was created in database");
     }
 
     private function registerUser($userData)
@@ -95,8 +103,8 @@ class UserRegistrationTest extends TestCase
             return false;
         }
 
-        // Hash password securely
-        $password = password_hash($userData['password'], PASSWORD_DEFAULT);
+        // Hash password using MD5 (as per your existing system)
+        $password = md5($userData['password']);
 
         // Escape strings to prevent SQL injection
         $firstname = mysqli_real_escape_string($this->conn, $userData['firstname']);
@@ -112,16 +120,20 @@ class UserRegistrationTest extends TestCase
         return mysqli_query($this->conn, $query);
     }
 
-    protected function cleanUpDatabase()
+    private function cleanUpDatabase()
     {
-        // Ensure no conflicting test users are left over
+        // Clean up any existing test data
         mysqli_query($this->conn, "DELETE FROM user WHERE email LIKE '%@example.com'");
     }
 
     protected function tearDown(): void
     {
-        // Clean up test data after the test
+        // Clean up test data
         $this->cleanUpDatabase();
-        mysqli_close($this->conn);
+
+        // Close database connection
+        if ($this->conn) {
+            mysqli_close($this->conn);
+        }
     }
 }

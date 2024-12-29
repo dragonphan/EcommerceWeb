@@ -3,42 +3,63 @@ name: CI/CD Pipeline for PHP Project
 on:
   push:
     branches:
-      - testing  # Trigger the pipeline on the testing branch
+      - main
   pull_request:
     branches:
-      - testing  # Trigger the pipeline on pull requests targeting testing
+      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04  # Use a specific Ubuntu version
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: assgroup_test
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=5s
+          --health-timeout=2s
+          --health-retries=5
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      # Step 2: Set up PHP
-      - name: Set up PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
           extensions: mbstring, mysqli, pdo_mysql
+          coverage: xdebug
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: composer install
+      - name: Verify MySQL connection
+        env:
+          DB_DATABASE: assgroup_test
+          DB_USER: root
+          DB_PASSWORD: root
+        run: |
+          mysql --host 127.0.0.1 --port 3306 -uroot -proot -e "SHOW DATABASES;"
 
-      # Step 4: Set up MySQL using Docker
-      - name: Set up MySQL
-        uses: docker://mysql:8.0  # Use the official MySQL Docker image
-        with:
-          args: |
-            --name mysql-container
-            -e MYSQL_ROOT_PASSWORD=password
-            -e MYSQL_DATABASE=test_db
-            -p 3306:3306
-            -d
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-progress
 
-      # Step 5: Run PHPUnit tests
-      - name: Run tests
-        run: ./vendor/bin/phpunit tests
+      - name: Setup test database
+        run: |
+          mysql --host 127.0.0.1 --port 3306 -uroot -proot assgroup_test < tests/setup_test_db.sql
+
+      - name: Run PHPUnit tests
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: assgroup_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: vendor/bin/phpunit --configuration phpunit.xml
