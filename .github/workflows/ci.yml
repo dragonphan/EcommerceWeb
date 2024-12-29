@@ -12,6 +12,16 @@ jobs:
   build:
     runs-on: ubuntu-22.04  # Use a specific Ubuntu version
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping --silent" --health-timeout=30s --health-retries=3
+
     steps:
       # Step 1: Checkout code
       - name: Checkout code
@@ -28,14 +38,6 @@ jobs:
       - name: Install dependencies
         run: composer install
 
-      # Step 4: Set up MySQL using devcontainer feature
-      - name: Set up MySQL
-        uses: devcontainers/features/mysql@v1
-        with:
-          version: '8.0'
-          root-password: 'password'
-          database: 'test_db'
-
-      # Step 5: Run PHPUnit tests
+      # Step 4: Run PHPUnit tests
       - name: Run tests
         run: ./vendor/bin/phpunit tests
