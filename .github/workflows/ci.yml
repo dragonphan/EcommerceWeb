@@ -19,16 +19,16 @@ jobs:
           MYSQL_DATABASE: test_db
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping --silent" --health-timeout=60s --health-retries=5  # Increased timeout and retries
+        options: --health-cmd="mysqladmin ping --silent" --health-timeout=60s --health-retries=5
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up PHP
+      - name: Set up PHP 8.1
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '8.1'  # Specify PHP version 8.1
 
       - name: Install Composer dependencies
         run: |
