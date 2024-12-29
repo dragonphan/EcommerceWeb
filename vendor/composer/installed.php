@@ -1,15 +1,24 @@
 <?php return array(
     'root' => array(
         'name' => 'your-name/ecommerce-web',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'a009b337558c47c6010281fcc25675cd552c78a0',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'composer/installers' => array(
+            'pretty_version' => 'v1.12.0',
+            'version' => '1.12.0.0',
+            'reference' => 'd20a64ed3c94748397ff5973488761b22f6d3f19',
+            'type' => 'composer-plugin',
+            'install_path' => __DIR__ . '/./installers',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'doctrine/instantiator' => array(
             'pretty_version' => '2.0.0',
             'version' => '2.0.0.0',
@@ -108,6 +117,12 @@
             'install_path' => __DIR__ . '/../phpunit/phpunit',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'roundcube/plugin-installer' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
         ),
         'sebastian/cli-parser' => array(
             'pretty_version' => '1.0.2',
@@ -253,6 +268,12 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'shama/baton' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
+        ),
         'theseer/tokenizer' => array(
             'pretty_version' => '1.2.3',
             'version' => '1.2.3.0',
@@ -263,9 +284,9 @@
             'dev_requirement' => true,
         ),
         'your-name/ecommerce-web' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'a009b337558c47c6010281fcc25675cd552c78a0',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

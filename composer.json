@@ -24,7 +24,10 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "composer/installers": true
+        }
     },
     "minimum-stability": "stable"
 }
