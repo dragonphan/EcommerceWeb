@@ -3,14 +3,14 @@ name: CI/CD Pipeline for PHP Project
 on:
   push:
     branches:
-      - testing # Change this to the branch you want the pipeline to run on
+      - testing  # Change this to the branch you want the pipeline to run on
   pull_request:
     branches:
       - testing  # Add pull request triggers if needed
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Future-proof by using a specific version of Ubuntu
 
     steps:
       # Step 1: Checkout code
@@ -28,9 +28,9 @@ jobs:
       - name: Install dependencies
         run: composer install
 
-      # Step 4: Set up MySQL
+      # Step 4: Set up MySQL (Alternative action)
       - name: Set up MySQL
-        uses: mirromutth/mysql-action@v1.2.0
+        uses: devcontainers/ci@v0.2
         with:
           mysql-version: '8.0'
           root-password: 'password'
