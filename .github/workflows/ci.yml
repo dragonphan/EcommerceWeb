@@ -19,7 +19,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h localhost"
+          --health-cmd="mysqladmin ping -h mysql --silent"  # Use "mysql" as the host here
           --health-interval=3s
           --health-timeout=3s
           --health-retries=10
@@ -37,7 +37,7 @@ jobs:
       - name: Verify MySQL Connection
         run: |
           for i in {1..10}; do
-            if mysql -h"127.0.0.1" -P"3306" -uroot -proot -e "SELECT 1" >/dev/null 2>&1; then
+            if mysql -h"mysql" -P"3306" -uroot -proot -e "SELECT 1" >/dev/null 2>&1; then  # Use "mysql" as the host here
               echo "MySQL is ready!"
               exit 0
             fi
@@ -51,7 +51,7 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Setup Database
-        run: mysql -h"127.0.0.1" -P"3306" -uroot -proot assgroup_test < tests/setup_test_db.sql
+        run: mysql -h"mysql" -P"3306" -uroot -proot assgroup_test < tests/setup_test_db.sql  # Use "mysql" as the host here
 
       - name: Run Tests
         run: vendor/bin/phpunit
