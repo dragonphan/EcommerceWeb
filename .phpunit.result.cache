@@ -1,0 +1,1 @@
+{"version":1,"defects":{"UserTest::testUserRegistration":4,"UserRegistrationTest::testValidUserRegistration":4,"UserRegistrationTest::testInvalidUserRegistration":4},"times":{"UserTest::testUserRegistration":0.006,"UserRegistrationTest::testValidUserRegistration":0.103,"UserRegistrationTest::testInvalidUserRegistration":0.02}}
