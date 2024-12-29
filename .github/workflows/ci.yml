@@ -30,14 +30,11 @@ jobs:
 
       # Step 4: Set up MySQL using Docker
       - name: Set up MySQL
-        uses: docker://mysql:8.0  # Use the official MySQL Docker image
+        uses: mysql/setup-mysql-action@v1.0.0  # Use the official MySQL Docker image
         with:
-          args: |
-            --name mysql-container
-            -e MYSQL_ROOT_PASSWORD=password
-            -e MYSQL_DATABASE=test_db
-            -p 3306:3306
-            -d
+            mysql-version: '8.0'
+            root-password: 'password'  # Ensure root password is set here
+            database: 'test_db'
 
       # Step 5: Run PHPUnit tests
       - name: Run tests
