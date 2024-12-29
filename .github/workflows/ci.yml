@@ -1,0 +1,41 @@
+name: CI/CD Pipeline for PHP Project
+
+on:
+  push:
+    branches:
+      - testing # Change this to the branch you want the pipeline to run on
+  pull_request:
+    branches:
+      - testing  # Add pull request triggers if needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up PHP
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, mysqli, pdo_mysql
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: composer install
+
+      # Step 4: Set up MySQL
+      - name: Set up MySQL
+        uses: mirromutth/mysql-action@v1.2.0
+        with:
+          mysql-version: '8.0'
+          root-password: 'password'
+          database: 'test_db'
+
+      # Step 5: Run PHPUnit Tests
+      - name: Run tests
+        run: ./vendor/bin/phpunit tests
