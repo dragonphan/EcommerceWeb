@@ -28,13 +28,16 @@ jobs:
       - name: Install dependencies
         run: composer install
 
-      # Step 4: Set up MySQL using the official action
+      # Step 4: Set up MySQL using Docker
       - name: Set up MySQL
-        uses: mysql/setup-mysql-action@v1.0.0  # Use this updated action
+        uses: docker://mysql:8.0  # Use the official MySQL Docker image
         with:
-          mysql-version: '8.0'
-          root-password: 'password'
-          database: 'test_db'
+          args: |
+            --name mysql-container
+            -e MYSQL_ROOT_PASSWORD=password
+            -e MYSQL_DATABASE=test_db
+            -p 3306:3306
+            -d
 
       # Step 5: Run PHPUnit tests
       - name: Run tests
