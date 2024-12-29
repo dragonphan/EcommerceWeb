@@ -2,53 +2,56 @@ name: CI/CD Pipeline for PHP Project
 
 on:
   push:
-    branches:
-      - testing  # Trigger the pipeline on the testing branch
+    branches: [ main ]
   pull_request:
-    branches:
-      - testing  # Trigger the pipeline on pull requests targeting testing
+    branches: [ main ]
 
 jobs:
-  setup:
+  test:
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test_db
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: assgroup_test
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping --silent" --health-timeout=60s --health-retries=5
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=3s
+          --health-timeout=3s
+          --health-retries=10
+          --health-start-period=10s
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Set up PHP 8.1
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          extensions: mbstring, mysqli, pdo_mysql
 
-      - name: Install Composer dependencies
+      - name: Verify MySQL Connection
         run: |
-          curl -sS https://getcomposer.org/installer | php
-          php composer.phar install
-
-      - name: Wait for MySQL to be ready
-        run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h"mysql" --silent; then
-              echo "MySQL is up!"
-              break
+          for i in {1..10}; do
+            if mysql -h"127.0.0.1" -P"3306" -uroot -proot -e "SELECT 1" >/dev/null 2>&1; then
+              echo "MySQL is ready!"
+              exit 0
             fi
-            echo "Waiting for MySQL..."
-            sleep 10  # Increased sleep time between retries
+            echo "Attempt $i: Waiting for MySQL... (3s)"
+            sleep 3
           done
+          echo "MySQL connection failed after 10 attempts"
+          exit 1
 
-      - name: Test MySQL connection
-        run: |
-          mysql -h "mysql" -u "root" -ppassword -e "SHOW DATABASES;"
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress
 
-      - name: Run PHPUnit tests
-        run: ./vendor/bin/phpunit --configuration phpunit.xml
+      - name: Setup Database
+        run: mysql -h"127.0.0.1" -P"3306" -uroot -proot assgroup_test < tests/setup_test_db.sql
+
+      - name: Run Tests
+        run: vendor/bin/phpunit
