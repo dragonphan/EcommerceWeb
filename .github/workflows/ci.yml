@@ -9,67 +9,12 @@ on:
       - main
 
 jobs:
-<<<<<<< HEAD
-  test:
-    runs-on: ubuntu-latest
-
-=======
   setup:
     runs-on: ubuntu-latest
->>>>>>> a2fa75fd3b06ec2f997d59d26448f274aab79db9
     services:
       mysql:
         image: mysql:8.0
         env:
-<<<<<<< HEAD
-          MYSQL_DATABASE: assgroup_test
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-        ports:
-          - "3306:3306"
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=5s
-          --health-timeout=2s
-          --health-retries=5
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          extensions: mbstring, mysqli, pdo_mysql
-          coverage: xdebug
-
-      - name: Verify MySQL connection
-        env:
-          DB_DATABASE: assgroup_test
-          DB_USER: root
-          DB_PASSWORD: root
-        run: |
-          mysql --host 127.0.0.1 --port 3306 -uroot -proot -e "SHOW DATABASES;"
-
-      - name: Install Composer dependencies
-        run: |
-          composer install --prefer-dist --no-progress
-
-      - name: Setup test database
-        run: |
-          mysql --host 127.0.0.1 --port 3306 -uroot -proot assgroup_test < tests/setup_test_db.sql
-
-      - name: Run PHPUnit tests
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: assgroup_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
-        run: vendor/bin/phpunit --configuration phpunit.xml
-=======
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: test_db
         ports:
@@ -108,4 +53,3 @@ jobs:
 
       - name: Run PHPUnit tests
         run: ./vendor/bin/phpunit tests
->>>>>>> a2fa75fd3b06ec2f997d59d26448f274aab79db9
