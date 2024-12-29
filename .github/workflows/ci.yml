@@ -46,10 +46,10 @@ jobs:
             sleep 10  # Increased sleep time between retries
           done
 
-      - name: View MySQL logs for debugging
+      - name: Test MySQL connection
         run: |
-          echo "MySQL container logs:"
-          docker logs $(docker ps -q --filter "ancestor=mysql:8.0")
+          mysql -h "mysql" -u "root" -ppassword -e "SHOW DATABASES;"
+        # Ensure MySQL is accessible before proceeding with tests
 
       - name: Run PHPUnit tests
         run: ./vendor/bin/phpunit tests
