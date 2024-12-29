@@ -3,10 +3,10 @@ name: CI/CD Pipeline for PHP Project
 on:
   push:
     branches:
-      - main
+      - testing  # Trigger the pipeline on the testing branch
   pull_request:
     branches:
-      - main
+      - testing  # Trigger the pipeline on pull requests targeting testing
 
 jobs:
   setup:
@@ -28,7 +28,7 @@ jobs:
       - name: Set up PHP 8.1
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'  # Specify PHP version 8.1
+          php-version: '8.1'
 
       - name: Install Composer dependencies
         run: |
@@ -49,7 +49,6 @@ jobs:
       - name: Test MySQL connection
         run: |
           mysql -h "mysql" -u "root" -ppassword -e "SHOW DATABASES;"
-        # Ensure MySQL is accessible before proceeding with tests
 
       - name: Run PHPUnit tests
-        run: ./vendor/bin/phpunit tests
+        run: ./vendor/bin/phpunit --configuration phpunit.xml
