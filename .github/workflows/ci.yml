@@ -38,7 +38,15 @@ jobs:
       - name: Install dependencies
         run: composer install
 
-      # Step 4: Run PHPUnit tests with execute permission
+      # Step 4: Wait for MySQL to be ready
+      - name: Wait for MySQL to be ready
+        run: |
+          while ! mysqladmin ping -h"mysql" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      # Step 5: Run PHPUnit tests with execute permission
       - name: Run tests
         run: |
           chmod +x ./vendor/bin/phpunit  # Ensure phpunit has execute permission
