@@ -13,6 +13,7 @@ if (!isset($_SESSION['user_login'])) {
 
 if (isset($_REQUEST['keywords'])) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     $kid = mysqli_real_escape_string($conn, $_REQUEST['keywords']);
 <<<<<<< HEAD
 =======
@@ -30,6 +31,18 @@ if (isset($_REQUEST['keywords'])) {
     }
 } else {
     header('location: index.php');
+=======
+    $kid = mysqli_real_escape_string($conn, $_REQUEST['keywords']);
+    if (trim($kid) != "") {
+        // Continue with search
+    } else {
+        header('location: index.php');
+        exit();
+    }
+} else {
+    header('location: index.php');
+    exit();
+>>>>>>> d221b62 (Testing commit)
 }
 
 $search_value = trim($_GET['keywords']);
@@ -61,13 +74,18 @@ $search_value = trim($_GET['keywords']);
             <?php
             if (isset($_GET['keywords']) && $_GET['keywords'] != "") {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $search_value = trim($_GET['keywords']);
 <<<<<<< HEAD
+=======
+                $search_value = trim($_GET['keywords']);
+>>>>>>> d221b62 (Testing commit)
                 $stmt = $conn->prepare("SELECT * FROM products WHERE productname LIKE ? OR item LIKE ? ORDER BY id DESC");
                 $search_pattern = "%{$search_value}%";
                 $stmt->bind_param("ss", $search_pattern, $search_pattern);
                 $stmt->execute();
                 $getposts = $stmt->get_result();
+<<<<<<< HEAD
 =======
                 $search_value = mysqli_real_escape_string($conn, $search_value);
                 $sql = "SELECT * FROM products WHERE productname LIKE '%$search_value%' OR item LIKE '%$search_value%' ORDER BY id DESC";
@@ -82,6 +100,10 @@ $search_value = trim($_GET['keywords']);
                 $getposts = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 >>>>>>> parent of 0a71290 (Merge branch 'main' into View-&-Search-Product)
                 $total = mysqli_num_rows($getposts);
+=======
+                $total = mysqli_num_rows($getposts);
+                
+>>>>>>> d221b62 (Testing commit)
                 echo '<div style="text-align: center;">' . $total . ' Product(s) Found</div><br>';
                 echo '<div class="product-container">';
                 while ($row = mysqli_fetch_assoc($getposts)) {
