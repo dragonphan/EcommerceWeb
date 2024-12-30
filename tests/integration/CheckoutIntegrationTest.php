@@ -128,18 +128,54 @@ class CheckoutIntegrationTest extends TestCase
         $item = mysqli_fetch_assoc($result);
         
         $this->assertTrue($item['quantity'] > $item['availableunit'], "Should detect insufficient stock");
+
+        // Reset product stock
+        $query = "UPDATE products SET availableunit = 10 WHERE id = ?";
+        $stmt = mysqli_prepare($this->conn, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $this->productId);
+        mysqli_stmt_execute($stmt);
     }
 
     protected function tearDown(): void
     {
         if ($this->conn) {
-            // Clean up test data
-            mysqli_query($this->conn, "DELETE FROM order_items WHERE order_id = {$this->orderId}");
-            mysqli_query($this->conn, "DELETE FROM orders WHERE order_id = {$this->orderId}");
-            mysqli_query($this->conn, "DELETE FROM cart WHERE userid = {$this->userId}");
-            mysqli_query($this->conn, "DELETE FROM user WHERE id = {$this->userId}");
-            mysqli_query($this->conn, "DELETE FROM products WHERE id = {$this->productId}");
-            mysqli_close($this->conn);
+            try {
+                // Clean up test data with proper null checks and prepared statements
+                if ($this->orderId) {
+                    $query = "DELETE FROM order_items WHERE order_id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->orderId);
+                    mysqli_stmt_execute($stmt);
+
+                    $query = "DELETE FROM orders WHERE order_id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->orderId);
+                    mysqli_stmt_execute($stmt);
+                }
+
+                if ($this->userId) {
+                    $query = "DELETE FROM cart WHERE userid = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->userId);
+                    mysqli_stmt_execute($stmt);
+
+                    $query = "DELETE FROM user WHERE id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->userId);
+                    mysqli_stmt_execute($stmt);
+                }
+
+                if ($this->productId) {
+                    $query = "DELETE FROM products WHERE id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->productId);
+                    mysqli_stmt_execute($stmt);
+                }
+            } catch (Exception $e) {
+                error_log("Error during test cleanup: " . $e->getMessage());
+            } finally {
+                mysqli_close($this->conn);
+            }
         }
     }
 } 
