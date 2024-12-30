@@ -5,17 +5,25 @@
          colors="true"
          verbose="true">
     <testsuites>
-        <testsuite name="E-commerce Test Suite">
+        <testsuite name="Unit">
             <directory suffix="Test.php">./tests</directory>
+            <exclude>./tests/regression</exclude>
+            <exclude>./tests/integration</exclude>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/integration</directory>
+        </testsuite>
+        <testsuite name="Regression">
+            <directory>tests/regression</directory>
         </testsuite>
     </testsuites>
     <php>
-    <env name="APP_ENV" value="testing"/>
-    <env name="DB_CONNECTION" value="mysql"/>
-    <env name="DB_HOST" value="127.0.0.1"/>
-    <env name="DB_PORT" value="3306"/>
-    <env name="DB_DATABASE" value="assgroup_test"/>
-    <env name="DB_USERNAME" value="test_user"/>
-    <env name="DB_PASSWORD" value="test_password"/>
-</php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_DATABASE" value="assgroup_test"/>
+        <env name="DB_USERNAME" value="test_user"/>
+        <env name="DB_PASSWORD" value="test_password"/>
+    </php>
 </phpunit>
