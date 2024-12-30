@@ -23,26 +23,36 @@ class SystemRegressionTest extends TestCase
             $this->fail("Database connection failed: " . mysqli_connect_error());
         }
 
+        // Initialize IDs to null
+        $this->userId = null;
+        $this->adminId = null;
+        $this->productId = null;
+        $this->orderId = null;
+
         // Create test data
         $this->setupTestData();
     }
 
     private function setupTestData(): void
     {
-        // Create test user
-        $query = "INSERT INTO user (firstname, lastname, email, phoneno, address, password, isAdmin) 
-                 VALUES ('Test', 'User', 'regression.test@test.com', '1234567890', 'Test Address', ?, 0)";
-        $stmt = mysqli_prepare($this->conn, $query);
-        $password = md5('123456');
-        mysqli_stmt_bind_param($stmt, 's', $password);
-        mysqli_stmt_execute($stmt);
-        $this->userId = mysqli_insert_id($this->conn);
+        try {
+            // Create test user
+            $query = "INSERT INTO user (firstname, lastname, email, phoneno, address, password, isAdmin) 
+                     VALUES ('Test', 'User', 'regression.test@test.com', '1234567890', 'Test Address', ?, 0)";
+            $stmt = mysqli_prepare($this->conn, $query);
+            $password = md5('123456');
+            mysqli_stmt_bind_param($stmt, 's', $password);
+            mysqli_stmt_execute($stmt);
+            $this->userId = mysqli_insert_id($this->conn);
 
-        // Create test product
-        $query = "INSERT INTO products (productname, price, description, availableunit, item, image) 
-                 VALUES ('Regression Test Product', 99.99, 'Test Description', 100, 'clothes', 'test.png')";
-        mysqli_query($this->conn, $query);
-        $this->productId = mysqli_insert_id($this->conn);
+            // Create test product
+            $query = "INSERT INTO products (productname, price, description, availableunit, item, image) 
+                     VALUES ('Regression Test Product', 99.99, 'Test Description', 100, 'clothes', 'test.png')";
+            mysqli_query($this->conn, $query);
+            $this->productId = mysqli_insert_id($this->conn);
+        } catch (Exception $e) {
+            $this->fail("Failed to set up test data: " . $e->getMessage());
+        }
     }
 
     public function testUserAuthentication(): void
@@ -188,13 +198,66 @@ class SystemRegressionTest extends TestCase
     protected function tearDown(): void
     {
         if ($this->conn) {
-            // Clean up test data
-            mysqli_query($this->conn, "DELETE FROM order_items WHERE order_id = {$this->orderId}");
-            mysqli_query($this->conn, "DELETE FROM orders WHERE order_id = {$this->orderId}");
-            mysqli_query($this->conn, "DELETE FROM cart WHERE userid = {$this->userId}");
-            mysqli_query($this->conn, "DELETE FROM user WHERE id = {$this->userId}");
-            mysqli_query($this->conn, "DELETE FROM products WHERE id = {$this->productId}");
-            mysqli_close($this->conn);
+            try {
+                // Clean up test data with proper null checks
+                if ($this->orderId) {
+                    $query = "DELETE FROM order_items WHERE order_id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->orderId);
+                    mysqli_stmt_execute($stmt);
+
+                    $query = "DELETE FROM orders WHERE order_id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->orderId);
+                    mysqli_stmt_execute($stmt);
+                }
+
+                if ($this->userId) {
+                    $query = "DELETE FROM cart WHERE userid = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->userId);
+                    mysqli_stmt_execute($stmt);
+
+                    $query = "DELETE FROM user WHERE id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->userId);
+                    mysqli_stmt_execute($stmt);
+                }
+
+                if ($this->productId) {
+                    $query = "DELETE FROM products WHERE id = ?";
+                    $stmt = mysqli_prepare($this->conn, $query);
+                    mysqli_stmt_bind_param($stmt, 'i', $this->productId);
+                    mysqli_stmt_execute($stmt);
+                }
+
+                mysqli_close($this->conn);
+            } catch (Exception $e) {
+                // Log cleanup errors but don't fail the test
+                error_log("Error during test cleanup: " . $e->getMessage());
+            }
+        }
+    }
+
+    private function cleanupTestData(): void
+    {
+        // Additional cleanup method if needed
+        try {
+            mysqli_query($this->conn, "DELETE FROM user WHERE email = 'regression.test@test.com'");
+            mysqli_query($this->conn, "DELETE FROM products WHERE productname = 'Regression Test Product'");
+        } catch (Exception $e) {
+            error_log("Error during additional cleanup: " . $e->getMessage());
+        }
+    }
+
+    public function __destruct()
+    {
+        // Final cleanup when object is destroyed
+        if ($this->conn) {
+            $this->cleanupTestData();
+            if (mysqli_ping($this->conn)) {
+                mysqli_close($this->conn);
+            }
         }
     }
 } 
