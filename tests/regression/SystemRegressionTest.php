@@ -36,6 +36,9 @@ class SystemRegressionTest extends TestCase
     private function setupTestData(): void
     {
         try {
+            // Clean up any existing test data
+            $this->cleanupTestData();
+
             // Create test user
             $query = "INSERT INTO user (firstname, lastname, email, phoneno, address, password, isAdmin) 
                      VALUES ('Test', 'User', 'regression.test@test.com', '1234567890', 'Test Address', ?, 0)";
@@ -197,7 +200,7 @@ class SystemRegressionTest extends TestCase
 
     protected function tearDown(): void
     {
-        if ($this->conn) {
+        if ($this->conn && mysqli_ping($this->conn)) {
             try {
                 // Clean up test data with proper null checks
                 if ($this->orderId) {
@@ -231,9 +234,13 @@ class SystemRegressionTest extends TestCase
                     mysqli_stmt_execute($stmt);
                 }
 
+                // Clean up any remaining test data
+                $this->cleanupTestData();
+
+                // Close connection
                 mysqli_close($this->conn);
+                $this->conn = null;
             } catch (Exception $e) {
-                // Log cleanup errors but don't fail the test
                 error_log("Error during test cleanup: " . $e->getMessage());
             }
         }
@@ -241,12 +248,23 @@ class SystemRegressionTest extends TestCase
 
     private function cleanupTestData(): void
     {
-        // Additional cleanup method if needed
-        try {
-            mysqli_query($this->conn, "DELETE FROM user WHERE email = 'regression.test@test.com'");
-            mysqli_query($this->conn, "DELETE FROM products WHERE productname = 'Regression Test Product'");
-        } catch (Exception $e) {
-            error_log("Error during additional cleanup: " . $e->getMessage());
+        if ($this->conn && mysqli_ping($this->conn)) {
+            try {
+                // Clean up by email and product name
+                $query = "DELETE FROM user WHERE email = ?";
+                $stmt = mysqli_prepare($this->conn, $query);
+                $email = 'regression.test@test.com';
+                mysqli_stmt_bind_param($stmt, 's', $email);
+                mysqli_stmt_execute($stmt);
+
+                $query = "DELETE FROM products WHERE productname = ?";
+                $stmt = mysqli_prepare($this->conn, $query);
+                $productname = 'Regression Test Product';
+                mysqli_stmt_bind_param($stmt, 's', $productname);
+                mysqli_stmt_execute($stmt);
+            } catch (Exception $e) {
+                error_log("Error during additional cleanup: " . $e->getMessage());
+            }
         }
     }
 
