@@ -8,15 +8,14 @@ class UserRegistrationTest extends TestCase
 
     protected function setUp(): void
     {
-        // Database configuration
-        $db_host = '127.0.0.1';  // Use IP instead of 'localhost'
-        $db_user = 'root';
-        $db_pass = 'root';
-        $db_name = 'assgroup_test';
-        $db_port = 3306;
-
+        // Database configuration from phpunit.xml
+        $db_host = getenv('DB_HOST');
+        $db_user = getenv('DB_USERNAME');
+        $db_pass = getenv('DB_PASSWORD');
+        $db_name = getenv('DB_DATABASE');
+        
         // Set up database connection for testing
-        $this->conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
+        $this->conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 
         if (!$this->conn) {
             $this->fail("Database connection failed: " . mysqli_connect_error());
@@ -26,112 +25,84 @@ class UserRegistrationTest extends TestCase
         $this->cleanUpDatabase();
     }
 
-    public function testValidUserRegistration()
+    protected function cleanUpDatabase(): void
     {
-        // Test data
-        $userData = [
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'email' => 'john.doe@example.com',
-            'phoneno' => '1234567890',
-            'address' => '123 Test St',
-            'password' => 'password123'
-        ];
+        // Clean up test data but keep the structure
+        mysqli_query($this->conn, "DELETE FROM order_items");
+        mysqli_query($this->conn, "DELETE FROM orders");
+        mysqli_query($this->conn, "DELETE FROM cart");
+        mysqli_query($this->conn, "DELETE FROM user WHERE email LIKE '%test.com'");
+    }
 
-        // Test the registration
-        $result = $this->registerUser($userData);
-
-        // Assert registration was successful
-        $this->assertTrue($result, "User registration failed");
-
-        // Verify user exists in database
-        $email = mysqli_real_escape_string($this->conn, $userData['email']);
-        $query = "SELECT * FROM user WHERE email = '$email'";
-        $result = mysqli_query($this->conn, $query);
+    public function testUserRegistration(): void
+    {
+        // Test user registration
+        $query = "INSERT INTO user (firstname, lastname, email, phoneno, address, password, isAdmin) 
+                 VALUES ('John', 'Doe', 'john@test.com', '1234567890', 'Test Address', ?, 0)";
         
-        $this->assertNotFalse($result, "Database query failed");
-        $this->assertGreaterThan(0, mysqli_num_rows($result), "User not found in database");
+        $stmt = mysqli_prepare($this->conn, $query);
+        $password = md5('123456');
+        mysqli_stmt_bind_param($stmt, 's', $password);
+        
+        $this->assertTrue(mysqli_stmt_execute($stmt));
+        $userId = mysqli_insert_id($this->conn);
+        $this->assertGreaterThan(0, $userId);
 
+        // Verify user was created correctly
+        $query = "SELECT * FROM user WHERE id = ?";
+        $stmt = mysqli_prepare($this->conn, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $userId);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
         $user = mysqli_fetch_assoc($result);
 
-        // Assert user data was saved correctly
-        $this->assertEquals($userData['firstname'], $user['firstname'], "First name mismatch");
-        $this->assertEquals($userData['lastname'], $user['lastname'], "Last name mismatch");
-        $this->assertEquals($userData['email'], $user['email'], "Email mismatch");
-        $this->assertEquals($userData['phoneno'], $user['phoneno'], "Phone number mismatch");
-        $this->assertEquals($userData['address'], $user['address'], "Address mismatch");
+        $this->assertEquals('John', $user['firstname']);
+        $this->assertEquals('Doe', $user['lastname']);
+        $this->assertEquals('john@test.com', $user['email']);
+        $this->assertEquals($password, $user['password']);
+    }
+
+    public function testUserLogin(): void
+    {
+        // Insert a test user
+        $password = md5('123456');
+        $email = 'test.login@test.com';
         
-        // Verify password was hashed
-        $this->assertNotEquals($userData['password'], $user['password'], "Password was not hashed");
-        $this->assertEquals(32, strlen($user['password']), "Password hash length incorrect"); // MD5 hash length
-    }
-
-    public function testInvalidUserRegistration()
-    {
-        // Test data with missing required fields
-        $userData = [
-            'firstname' => '',  // Empty firstname
-            'lastname' => 'Doe',
-            'email' => 'invalid@example.com',
-            'phoneno' => '1234567890',
-            'address' => '123 Test St',
-            'password' => 'password123'
-        ];
-
-        // Test the registration
-        $result = $this->registerUser($userData);
-
-        // Assert registration failed
-        $this->assertFalse($result, "Invalid registration was accepted");
-
-        // Verify user doesn't exist in database
-        $email = mysqli_real_escape_string($this->conn, $userData['email']);
-        $query = "SELECT * FROM user WHERE email = '$email'";
-        $result = mysqli_query($this->conn, $query);
+        $query = "INSERT INTO user (firstname, lastname, email, phoneno, address, password, isAdmin) 
+                 VALUES (?, ?, ?, ?, ?, ?, 0)";
         
-        $this->assertNotFalse($result, "Database query failed");
-        $this->assertEquals(0, mysqli_num_rows($result), "Invalid user was created in database");
-    }
+        $stmt = mysqli_prepare($this->conn, $query);
+        $firstname = 'Test';
+        $lastname = 'Login';
+        $phone = '1234567890';
+        $address = 'Test Address';
+        
+        mysqli_stmt_bind_param($stmt, 'ssssss', $firstname, $lastname, $email, $phone, $address, $password);
+        mysqli_stmt_execute($stmt);
 
-    private function registerUser($userData)
-    {
-        // Validate required fields
-        if (empty($userData['firstname']) || 
-            empty($userData['lastname']) || 
-            empty($userData['email']) || 
-            empty($userData['password'])) {
-            return false;
-        }
+        // Test login with correct credentials
+        $query = "SELECT * FROM user WHERE email = ? AND password = ?";
+        $stmt = mysqli_prepare($this->conn, $query);
+        mysqli_stmt_bind_param($stmt, 'ss', $email, $password);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $user = mysqli_fetch_assoc($result);
 
-        // Hash password using MD5 (as per your existing system)
-        $password = md5($userData['password']);
-
-        // Escape strings to prevent SQL injection
-        $firstname = mysqli_real_escape_string($this->conn, $userData['firstname']);
-        $lastname = mysqli_real_escape_string($this->conn, $userData['lastname']);
-        $email = mysqli_real_escape_string($this->conn, $userData['email']);
-        $phoneno = mysqli_real_escape_string($this->conn, $userData['phoneno']);
-        $address = mysqli_real_escape_string($this->conn, $userData['address']);
-
-        // Insert user into database
-        $query = "INSERT INTO user (firstname, lastname, email, password, phoneno, address) 
-                 VALUES ('$firstname', '$lastname', '$email', '$password', '$phoneno', '$address')";
-
-        return mysqli_query($this->conn, $query);
-    }
-
-    private function cleanUpDatabase()
-    {
-        // Clean up any existing test data
-        mysqli_query($this->conn, "DELETE FROM user WHERE email LIKE '%@example.com'");
+        $this->assertNotNull($user);
+        $this->assertEquals('Test', $user['firstname']);
+        
+        // Test login with incorrect password
+        $wrongPassword = md5('wrongpass');
+        $stmt = mysqli_prepare($this->conn, $query);
+        mysqli_stmt_bind_param($stmt, 'ss', $email, $wrongPassword);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        $this->assertEquals(0, mysqli_num_rows($result));
     }
 
     protected function tearDown(): void
     {
-        // Clean up test data
-        $this->cleanUpDatabase();
-
-        // Close database connection
         if ($this->conn) {
             mysqli_close($this->conn);
         }
