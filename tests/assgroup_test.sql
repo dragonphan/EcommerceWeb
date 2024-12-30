@@ -70,7 +70,7 @@ CREATE TABLE order_items (
 
 -- Insert test data
 INSERT INTO user (firstname, lastname, email, phoneno, address, password, isAdmin) VALUES
-('Test', 'Admin', 'admin@test.com', '1234567890', 'Test Address', '202cb962ac59075b964b07152d234b70', 1),
+('Test', 'Admin', 'admin@gmail.com', '1234567890', 'Test Address', '202cb962ac59075b964b07152d234b70', 1),
 ('Test', 'User', 'user@test.com', '0987654321', 'User Address', '202cb962ac59075b964b07152d234b70', 0);
 
 INSERT INTO products (productname, price, description, availableunit, item, image) VALUES
