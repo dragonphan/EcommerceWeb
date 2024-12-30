@@ -20,6 +20,9 @@ class SearchTest extends TestCase
             $this->fail("Database connection failed: " . mysqli_connect_error());
         }
 
+        // Clean up any existing test products first
+        mysqli_query($this->conn, "DELETE FROM products WHERE productname LIKE 'Test%'");
+
         // Create test products
         $testProducts = [
             ['Test Shirt', 'clothes', 'A test shirt'],
@@ -41,7 +44,7 @@ class SearchTest extends TestCase
     {
         // Test search by product name
         $keyword = 'Shirt';
-        $query = "SELECT * FROM products WHERE productname LIKE ? OR item LIKE ?";
+        $query = "SELECT * FROM products WHERE productname LIKE ? OR description LIKE ?";
         $stmt = mysqli_prepare($this->conn, $query);
         $searchTerm = "%$keyword%";
         mysqli_stmt_bind_param($stmt, 'ss', $searchTerm, $searchTerm);
@@ -53,6 +56,15 @@ class SearchTest extends TestCase
 
     public function testSearchByCategory(): void
     {
+        // Clean up existing test products first
+        mysqli_query($this->conn, "DELETE FROM products WHERE productname LIKE 'Test%'");
+
+        // Create a single test product in the clothes category
+        $query = "INSERT INTO products (productname, price, description, availableunit, item, image) 
+                 VALUES ('Test Clothes Item', 99.99, 'A test item', 100, 'clothes', 'test.png')";
+        mysqli_query($this->conn, $query);
+        $this->productIds[] = mysqli_insert_id($this->conn);
+
         // Test search by category
         $category = 'clothes';
         $query = "SELECT * FROM products WHERE item = ?";
@@ -67,9 +79,8 @@ class SearchTest extends TestCase
     protected function tearDown(): void
     {
         if ($this->conn) {
-            foreach ($this->productIds as $id) {
-                mysqli_query($this->conn, "DELETE FROM products WHERE id = $id");
-            }
+            // Clean up test products
+            mysqli_query($this->conn, "DELETE FROM products WHERE productname LIKE 'Test%'");
             mysqli_close($this->conn);
         }
     }

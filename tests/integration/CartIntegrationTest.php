@@ -62,9 +62,9 @@ class CartIntegrationTest extends TestCase
         mysqli_stmt_execute($stmt);
         $orderId = mysqli_insert_id($this->conn);
 
-        // Move cart items to order_items
-        $query = "INSERT INTO order_items (order_id, productid, quantity, price) 
-                 SELECT ?, productid, quantity, 99.99 FROM cart WHERE userid = ?";
+        // Move cart items to order_items (removed price field)
+        $query = "INSERT INTO order_items (order_id, productid, quantity) 
+                 SELECT ?, productid, quantity FROM cart WHERE userid = ?";
         $stmt = mysqli_prepare($this->conn, $query);
         mysqli_stmt_bind_param($stmt, 'ii', $orderId, $this->userId);
         mysqli_stmt_execute($stmt);
