@@ -1,27 +1,40 @@
 <?php
-include("config.php");
+namespace App;
+use App\Config;
+
+// Define constants for frequently used URLs and HTML elements
+define('INDEX_URL', 'location: index.php');
+define('LOGIN_URL', 'location: login.php');
+define('TR_END', '</tr>');
+define('TH_END', '</th>');
+define('RM_START', '<th>RM');
+
+require_once 'config.php';
 session_start();
 
 if (!isset($_SESSION['user_login'])) {
-    header("location: login.php");
-} else {
-    $user = $_SESSION['user_login'];
-    $result = mysqli_query($conn, "SELECT * FROM user WHERE id='$user'");
-    $get_user_email = mysqli_fetch_assoc($result);
-    $first_name_db = $get_user_email != null ? $get_user_email['firstname'] : null;
-    $last_name_db = $get_user_email != null ? $get_user_email['lastname'] : null;
-    $email_db = $get_user_email != null ? $get_user_email['email'] : null;
-    $phone_number_db = $get_user_email != null ? $get_user_email['phoneno'] : null;
-    $address_db = $get_user_email != null ? $get_user_email['address'] : null;
+    header(LOGIN_URL);
+    exit();
 }
+
+$user = $_SESSION['user_login'];
+$result = mysqli_query($conn, "SELECT * FROM user WHERE id='$user'");
+$get_user_email = mysqli_fetch_assoc($result);
+$first_name_db = $get_user_email['firstname'] ?? null;
+$last_name_db = $get_user_email['lastname'] ?? null;
+$email_db = $get_user_email['email'] ?? null;
+$phone_number_db = $get_user_email['phoneno'] ?? null;
+$address_db = $get_user_email['address'] ?? null;
 
 if (isset($_REQUEST['userid'])) {
     $user2 = mysqli_real_escape_string($conn, $_REQUEST['userid']);
     if ($user != $user2) {
-        header('location: index.php');
+        header(INDEX_URL);
+        exit();
     }
 } else {
-    header('location: index.php');
+    header(INDEX_URL);
+    exit();
 }
 
 if (isset($_REQUEST['did'])) {

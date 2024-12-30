@@ -1,5 +1,8 @@
 <?php
-include("config.php");
+namespace App;
+use App\Config;
+
+require_once 'config.php';
 ob_start();
 session_start();
 
@@ -45,83 +48,91 @@ if (isset($_POST['update_profile'])) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
 
 <head>
     <title>Edit Profile - Nita's Online Grocery</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-	<style>
-	body{
-		margin: 0;
-		background:url('image/background 4.png')center/cover no-repeat fixed;
-	}
-	table {
-		width: 50%; 
-		border-collapse: collapse;
-		table-layout: fixed;
-	}
-	
-	td {
-		padding: 8px;
-	}
-
-	td:first-child {
-		width: 30%;
-		text-align: right;
-		padding-right: 15px;
-	}
-
-	td:nth-child(2) {
-		width: 5%;
-	}
-
-	td:last-child {
-		text-align: left;
-	}
-	</style>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        body {
+            margin: 0;
+            background: url('image/background 4.png')center/cover no-repeat fixed;
+            min-width: 980px;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+        }
+        td {
+            padding: 8px;
+        }
+        td:first-child {
+            width: 30%;
+            text-align: right;
+            padding-right: 15px;
+        }
+        td:nth-child(2) {
+            width: 5%;
+        }
+        td:last-child {
+            text-align: left;
+        }
+    </style>
 </head>
 
-<body style="min-width: 980px;">
-	<?php include("header.php"); ?>
+<body>
+    <?php require_once 'header.php'; ?>
     <div class="profile-container">
-		<h1 style="text-align:center;">Edit Profile</h1>
-		<form method="post" action="">
-			 <table border="0" align="center" width="100%" >
-				<tr>
-					<td><b><label for="fname">First Name</label></td>
-					<td><b>:</td>
-					<td><input type="text" id="fname" name="fname" value="<?php echo htmlspecialchars($uname_db); ?>"></td>
-				</tr>
-				
-				<tr>
-					<td><b><label for="lname">Last Name</label></td>
-					<td><b>:</td>
-					<td><input type="text" id="lname" name="lname" value="<?php echo htmlspecialchars($lname_db); ?>"></td>
-				</tr>
+        <h1 style="text-align:center;">Edit Profile</h1>
+        <form method="post" action="">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th></th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="fname">First Name</label></td>
+                        <td>:</td>
+                        <td><input type="text" id="fname" name="fname" value="<?php echo htmlspecialchars($uname_db); ?>"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lname">Last Name</label></td>
+                        <td>:</td>
+                        <td><input type="text" id="lname" name="lname" value="<?php echo htmlspecialchars($lname_db); ?>"></td>
+                    </tr>
+                    <?php
+                    $fields = array(
+                        'email' => 'Email',
+                        'phoneno' => 'Phone Number',
+                        'address' => 'Address'
+                    );
 
-				<?php
-				$fields = array(
-					'email' => 'Email',
-					'phoneno' => 'Phone Number',
-					'address' => 'Address'
-				);
-	
-				foreach ($fields as $field => $label) {
-					echo "<tr>
-							<td><b><label for=\"$field\">$label</label></td>
-							<td><b>:</td>
-							<td><input type=\"text\" id=\"$field\" name=\"$field\" value=\"" . (!empty($get_user_data[$field]) ? htmlspecialchars($get_user_data[$field]) : '') . "\"></td>
-						</tr>";
-				}
-				?>
-			</table>
-			<input type="submit" name="update_profile" value="Update Profile" class="button">
-			<input type="button" value="Back" class="button" onclick="window.location.href='profile.php';">
-		</form>
-	</div>
-
+                    foreach ($fields as $field => $label) {
+                        echo "<tr>
+                                <td><label for=\"$field\">$label</label></td>
+                                <td>:</td>
+                                <td><input type=\"text\" id=\"$field\" name=\"$field\" value=\"" . 
+                                    (!empty($get_user_data[$field]) ? htmlspecialchars($get_user_data[$field]) : '') . 
+                                    "\"></td>
+                            </tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                <input type="submit" name="update_profile" value="Update Profile" class="button">
+                <input type="button" value="Back" class="button" onclick="window.location.href='profile.php';">
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>

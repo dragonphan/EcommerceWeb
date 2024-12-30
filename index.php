@@ -1,5 +1,9 @@
-<?php include("config.php"); ?>
 <?php
+namespace App;
+use App\Config;
+
+require_once 'config.php';
+
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	$user = "";
@@ -11,7 +15,7 @@ if (!isset($_SESSION['user_login'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
 
 <head>
 	<title>Welcome to E-Commerce</title>
@@ -27,7 +31,7 @@ if (!isset($_SESSION['user_login'])) {
 </head>
 
 <body>
-	<?php include("header.php"); ?>
+	<?php require_once 'header.php'; ?>
 	<div class="home-welcome-text">
 		<h1 style="text-align: center;">Welcome To E-Commerce</h1>
 	</div>
@@ -39,28 +43,28 @@ if (!isset($_SESSION['user_login'])) {
 		<div style="display: flex; justify-content: space-around; padding: 20px 30px; width: 85%; margin: 0 auto;">
 			<div style="padding: 25px;">
 				<div class="home-prodlist-img"><a href="Products/Clothes.php">
-						<img src="./image/product/clothes/cm.png" class="home-prodlist-imgi">
+						<img src="./image/product/clothes/cm.png" class="home-prodlist-imgi" alt="Clothes Category">
 					</a>
 				</div>
 			</div>
 			<div style="padding: 25px;">
 				<div class="home-prodlist-img"><a href="Products/Pants.php">
-						<img src="./image/product/pants/pm.png" class="home-prodlist-imgi">
+						<img src="./image/product/pants/pm.png" class="home-prodlist-imgi" alt="Pants Category">
 					</a>
 				</div>
 			</div>
 			<div style="padding: 25px;">
 				<div class="home-prodlist-img"><a href="Products/Shoes.php">
-						<img src="./image/product/shoes/sm.png" class="home-prodlist-imgi"></a>
+						<img src="./image/product/shoes/sm.png" class="home-prodlist-imgi" alt="Shoes Category"></a>
 				</div>
 			</div>
 			<div style="padding: 25px;">
 				<div class="home-prodlist-img"><a href="Products/Socks.php">
-						<img src="./image/product/socks/som.png" class="home-prodlist-imgi"></a>
+						<img src="./image/product/socks/som.png" class="home-prodlist-imgi" alt="Socks Category"></a>
 				</div>
 			</div>
 		</div>
-
+	</div>
 </body>
 
 </html>

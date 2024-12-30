@@ -1,5 +1,8 @@
 <?php
-include("config.php");
+namespace App;
+use App\Config;
+
+require_once 'config.php';
 session_start();
 
 if (!isset($_SESSION['user_login'])) {
@@ -19,7 +22,7 @@ $address_db = isset($get_user_data['address']) ? $get_user_data['address'] : nul
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
 
 <head>
 	<title>User Profile</title>
@@ -36,6 +39,7 @@ $address_db = isset($get_user_data['address']) ? $get_user_data['address'] : nul
 			width: 50%;
 			border-collapse: collapse;
 			table-layout: fixed;
+			margin: 0 auto;
 		}
 
 		td {
@@ -59,53 +63,54 @@ $address_db = isset($get_user_data['address']) ? $get_user_data['address'] : nul
 </head>
 
 <body class="profile_bg">
-	<?php include("header.php"); ?>
+	<?php require_once 'header.php'; ?>
 
 	<div class="profile-nav">
-		<a href="profile.php?uid='.$user.'">User Profile</a>
-		<a href="order.php?uid=' . $user.'">Order History</a>
+		<a href="profile.php?uid=<?php echo $user; ?>">User Profile</a>
+		<a href="order.php?uid=<?php echo $user; ?>">Order History</a>
 	</div>
 	<div class="profile-container">
 		<h1 style="text-align:center;">User Profile</h1>
-		<table border="0" align="center">
-			<tr>
-				<td><strong>First Name</strong></td>
-				<td>:</td>
-				<td>
-					<?php echo $uname_db; ?>
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Last Name</strong></td>
-				<td>:</td>
-				<td>
-					<?php echo $lname_db; ?>
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Email</strong></td>
-				<td>:</td>
-				<td>
-					<?php echo $email_db; ?>
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Phone Number</strong></td>
-				<td>:</td>
-				<td>
-					<?php echo $phoneno_db; ?>
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Address</strong></td>
-				<td>:</td>
-				<td>
-					<?php echo $address_db; ?>
-				</td>
-			</tr>
+		<table>
+			<thead>
+				<tr>
+					<th>Field</th>
+					<th></th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><strong>First Name</strong></td>
+					<td>:</td>
+					<td><?php echo $uname_db; ?></td>
+				</tr>
+				<tr>
+					<td><strong>Last Name</strong></td>
+					<td>:</td>
+					<td><?php echo $lname_db; ?></td>
+				</tr>
+				<tr>
+					<td><strong>Email</strong></td>
+					<td>:</td>
+					<td><?php echo $email_db; ?></td>
+				</tr>
+				<tr>
+					<td><strong>Phone Number</strong></td>
+					<td>:</td>
+					<td><?php echo $phoneno_db; ?></td>
+				</tr>
+				<tr>
+					<td><strong>Address</strong></td>
+					<td>:</td>
+					<td><?php echo $address_db; ?></td>
+				</tr>
+			</tbody>
 		</table>
-		<input type="button" value="Edit Profile" class="button" onclick="window.location.href='profile_edit.php';">
-		<input type="button" class="button" value="Back" onclick="window.location.href='index.php';">
+		<div style="text-align: center; margin-top: 20px;">
+			<input type="button" value="Edit Profile" class="button" onclick="window.location.href='profile_edit.php';">
+			<input type="button" class="button" value="Back" onclick="window.location.href='index.php';">
+		</div>
 	</div>
 </body>
 

@@ -1,4 +1,7 @@
 <?php
+// Define constants for commonly used styles
+define('LINK_STYLE', 'text-decoration: none; color: #76453B;');
+
 if (!isset($_SESSION['user_login'])) {
     $user = "";
     $first_name_db = ""; // Set to empty if user is not logged in
@@ -21,7 +24,7 @@ if (!isset($_SESSION['user_login'])) {
             <?php
             if ($user != "") {
                 $logout_url = file_exists("logout.php") ? "logout.php" : "../logout.php";
-                echo '<a style="text-decoration: none; color: #76453B;" href="' . $logout_url . '">LOG OUT</a>';
+                echo '<a style="' . LINK_STYLE . '" href="' . $logout_url . '">LOG OUT</a>';
             } else {
                 $register_url = file_exists("register.php") ? "register.php" : "../register.php";
                 echo '<a style="color: #76453B; text-decoration: none;" href="' . $register_url . '">SIGN UP</a>';
@@ -33,10 +36,10 @@ if (!isset($_SESSION['user_login'])) {
             <?php
             if ($user != "") {
                 $profile_url = file_exists("profile.php") ? 'profile.php?userid=' . $user : '../profile.php?userid=' . $user;
-                echo '<a style="text-decoration: none; color: #76453B;" href="' . $profile_url . '">Hi ' . $first_name_db . '</a>';
+                echo '<a style="' . LINK_STYLE . '" href="' . $profile_url . '">Hi ' . $first_name_db . '</a>';
             } else {
                 $login_url = file_exists("login.php") ? "login.php" : "../login.php";
-                echo '<a style="text-decoration: none; color: #76453B;" href="' . $login_url . '">LOG IN</a>';
+                echo '<a style="' . LINK_STYLE . '" href="' . $login_url . '">LOG IN</a>';
             }
             ?>
         </div>
@@ -47,10 +50,6 @@ if (!isset($_SESSION['user_login'])) {
             echo '<a href="' . $cart_url . '"><i class="bx bxs-cart bx-lg" style="color:#E2C799;"></i></a>';
             ?>
         </div>
-
-
-
-
     </div>
 
     <div style="float: left; margin: 5px 0px 0px 23px;">
