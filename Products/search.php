@@ -12,24 +12,16 @@ if (!isset($_SESSION['user_login'])) {
 }
 
 if (isset($_REQUEST['keywords'])) {
-<<<<<<< HEAD
     $kid = mysqli_real_escape_string($conn, $_REQUEST['keywords']);
-<<<<<<< HEAD
-=======
-    // Allow letters, numbers, spaces, and common symbols
-    $kid = preg_replace('/[^a-zA-Z0-9\s\-_.,&@!?()]/', '', $_REQUEST['keywords']);
->>>>>>> parent of 0a71290 (Merge branch 'main' into View-&-Search-Product)
     if (trim($kid) != "") {
         // Continue with search
-=======
-    if ($kid != "" && ctype_alnum($kid)) {
-        // Handle search logic if needed
->>>>>>> parent of 134d247 (Update search.php )
     } else {
         header('location: index.php');
+        exit();
     }
 } else {
     header('location: index.php');
+    exit();
 }
 
 $search_value = trim($_GET['keywords']);
@@ -60,28 +52,14 @@ $search_value = trim($_GET['keywords']);
         <div class="product-container">
             <?php
             if (isset($_GET['keywords']) && $_GET['keywords'] != "") {
-<<<<<<< HEAD
                 $search_value = trim($_GET['keywords']);
-<<<<<<< HEAD
                 $stmt = $conn->prepare("SELECT * FROM products WHERE productname LIKE ? OR item LIKE ? ORDER BY id DESC");
                 $search_pattern = "%{$search_value}%";
                 $stmt->bind_param("ss", $search_pattern, $search_pattern);
                 $stmt->execute();
                 $getposts = $stmt->get_result();
-=======
-                $search_value = mysqli_real_escape_string($conn, $search_value);
-                $sql = "SELECT * FROM products WHERE productname LIKE '%$search_value%' OR item LIKE '%$search_value%' ORDER BY id DESC";
-                $getposts = mysqli_query($conn, $sql) or die(mysqli_error($conn));
->>>>>>> parent of 134d247 (Update search.php )
-=======
-                // Allow specific characters
-                $search_value = preg_replace('/[^a-zA-Z0-9\s\-_.,&@!?()]/', '', $search_value);
-                $search_value = mysqli_real_escape_string($conn, $search_value);
-                
-                $sql = "SELECT * FROM products WHERE productname LIKE '%$search_value%' OR item LIKE '%$search_value%' ORDER BY id DESC";
-                $getposts = mysqli_query($conn, $sql) or die(mysqli_error($conn));
->>>>>>> parent of 0a71290 (Merge branch 'main' into View-&-Search-Product)
                 $total = mysqli_num_rows($getposts);
+                
                 echo '<div style="text-align: center;">' . $total . ' Product(s) Found</div><br>';
                 echo '<div class="product-container">';
                 while ($row = mysqli_fetch_assoc($getposts)) {
